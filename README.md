@@ -47,7 +47,7 @@ This script installs Hysteria 2 by fetching the binary directly from the officia
 
 Connect to your VPS and run the following command. Remember to replace `[YOUR_GITHUB_USERNAME]` with your own GitHub username.
 <br>
-连接到你的 VPS，并执行以下命令。请记得将 `[YOUR_GITHUB_USERNAME]` 替换成你自己的 GitHub 用户名。
+连接到你的 VPS，并执行以下命令。
 
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install.sh)

@@ -10,14 +10,6 @@
 #                It downloads directly from official GitHub releases and
 #                creates systemd service for management.
 #
-#       OPTIONS: ---
-#  REQUIREMENTS: A server with root access, a domain name pointing to the server's IP.
-#          BUGS: ---
-#         NOTES: ---
-#        AUTHOR: (Your Name)
-#  ORGANIZATION:
-#       CREATED: $(date +%Y-%m-%d)
-#      REVISION: 1.0
 #
 #================================================================================
 

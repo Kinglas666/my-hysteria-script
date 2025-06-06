@@ -50,6 +50,7 @@ bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script
 ```
 
 The script will then guide you to enter your domain name and your desired Hysteria 2 access password.
+
 脚本将引导你输入你的域名和你希望设定的 Hysteria 2 访问密码。
 
 ---

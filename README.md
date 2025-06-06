@@ -2,20 +2,14 @@
 ### 🇬🇧 English
 
 Tired of `curl | bash`-ing random scripts from the internet and praying you don't wake up to a crypto miner on your server? Me too.
-
 This isn't just another "one-click" script. This is **YOUR** one-click script, hosted on **YOUR** GitHub, with every line of code transparent and auditable. It's built on a simple, paranoid principle: **Trust No One, especially when it comes to root access.**
-
 This script installs Hysteria 2 by fetching the binary directly from the official GitHub releases, sets it up with a secure configuration, and manages it with `systemd`. No magic, no backdoors, just pure, clean automation that you control.
 
 ### 🇨🇳 中文
 
 厌倦了从网上随便找个链接，然后闭着眼睛 `curl | bash`，并祈祷第二天服务器不会变成别人的矿机？我也是。
-
 所以，这不只是又一个“一键脚本”。这是**你自己的**一键脚本，托管在**你自己的** GitHub 仓库里，每一行代码都清晰透明、可供审计。它的核心原则只有一个，而且带点偏执：**别相信任何人，尤其是在交出 root 权限的时候。**
-
 本脚本通过从 Hysteria 官方 GitHub Releases 页面直接拉取程序，为你安装 Hysteria 2，并使用 `systemd` 进行标准化服务管理。没有黑魔法，没有后门，只有你亲手掌控的、纯净的自动化。
-
----
 
 ## ✨ Features / 核心特性
 

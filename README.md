@@ -45,7 +45,7 @@ This script installs Hysteria 2 by fetching the binary directly from the officia
 
 ### Installation / 一键安装
 
-Connect to your VPS and run the following command. Remember to replace `[YOUR_GITHUB_USERNAME]` with your own GitHub username.
+Connect to your VPS and run the following command. 
 <br>
 连接到你的 VPS，并执行以下命令。
 

@@ -53,9 +53,8 @@ Connect to your VPS and run the following command.
 bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/refs/heads/main/install.sh)
 ```
 
-The script will then guide you to enter your domain and password.
-<br>
-脚本将引导你输入域名和密码。
+🇬🇧 English: The script will then guide you to enter your domain name and your desired Hysteria 2 access password.
+🇨🇳 中文: 脚本将引导你输入你的域名和你希望设定的 Hysteria 2 访问密码。
 
 ---
 

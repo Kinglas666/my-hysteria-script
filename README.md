@@ -50,7 +50,7 @@ Connect to your VPS and run the following command. Remember to replace `[YOUR_GI
 连接到你的 VPS，并执行以下命令。请记得将 `[YOUR_GITHUB_USERNAME]` 替换成你自己的 GitHub 用户名。
 
 ```bash
-bash <(curl -sSL https://raw.githubusercontent.com/[YOUR_GITHUB_USERNAME]/my-hysteria-script/main/install.sh)
+bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install.sh)
 ```
 
 The script will then guide you to enter your domain and password.

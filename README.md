@@ -1,11 +1,7 @@
 
-### 🇬🇧 English
-
 Tired of `curl | bash`-ing random scripts from the internet and praying you don't wake up to a crypto miner on your server? Me too.
 This isn't just another "one-click" script. This is **YOUR** one-click script, hosted on **YOUR** GitHub, with every line of code transparent and auditable. It's built on a simple, paranoid principle: **Trust No One, especially when it comes to root access.**
 This script installs Hysteria 2 by fetching the binary directly from the official GitHub releases, sets it up with a secure configuration, and manages it with `systemd`. No magic, no backdoors, just pure, clean automation that you control.
-
-### 🇨🇳 中文
 
 厌倦了从网上随便找个链接，然后闭着眼睛 `curl | bash`，并祈祷第二天服务器不会变成别人的矿机？我也是。
 所以，这不只是又一个“一键脚本”。这是**你自己的**一键脚本，托管在**你自己的** GitHub 仓库里，每一行代码都清晰透明、可供审计。它的核心原则只有一个，而且带点偏执：**别相信任何人，尤其是在交出 root 权限的时候。**
@@ -39,9 +35,9 @@ This script installs Hysteria 2 by fetching the binary directly from the officia
 
 ### Prerequisites / 前提条件
 
-1.  🇬🇧 A VPS running Debian or Ubuntu. / 🇨🇳 一台运行 Debian 或 Ubuntu 的服务器。
-2.  🇬🇧 A domain name pointed to your server's IP address. / 🇨🇳 一个已经解析到你服务器 IP 的域名。
-3.  🇬🇧 Root access to your VPS. / 🇨🇳 服务器的 root 权限。
+1.  A VPS running Debian or Ubuntu. / 🇨🇳 一台运行 Debian 或 Ubuntu 的服务器。
+2.  A domain name pointed to your server's IP address. / 🇨🇳 一个已经解析到你服务器 IP 的域名。
+3.  Root access to your VPS. / 🇨🇳 服务器的 root 权限。
 
 ### Installation / 一键安装
 
@@ -53,8 +49,8 @@ Connect to your VPS and run the following command.
 bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/refs/heads/main/install.sh)
 ```
 
-🇬🇧 English: The script will then guide you to enter your domain name and your desired Hysteria 2 access password.
-🇨🇳 中文: 脚本将引导你输入你的域名和你希望设定的 Hysteria 2 访问密码。
+The script will then guide you to enter your domain name and your desired Hysteria 2 access password.
+脚本将引导你输入你的域名和你希望设定的 Hysteria 2 访问密码。
 
 ---
 
@@ -111,9 +107,9 @@ The configuration file is located at `/etc/hysteria/config.yaml`.
 
 ## 📜 Disclaimer / 免责声明
 
-🇬🇧 This script is provided "as-is" without any warranty. Use at your own risk. I am not responsible for any damage or loss.
+This script is provided "as-is" without any warranty. Use at your own risk. I am not responsible for any damage or loss.
 <br>
-🇨🇳 本脚本按“原样”提供，不作任何保证。使用风险自负，作者不对任何损坏或损失负责。
+本脚本按“原样”提供，不作任何保证。使用风险自负，作者不对任何损坏或损失负责。
 
 ## 📄 License / 许可证
 

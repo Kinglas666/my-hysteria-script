@@ -2,10 +2,12 @@
 
 #================================================================================
 #
-#          FILE: install_hysteria_definitive.sh
+#          FILE: install_hysteria_final.sh
 #
-#   DESCRIPTION: The Definitive Hysteria 2 Installer, using a specific stable
-#                version (v2.6.1) to ensure maximum compatibility.
+#         USAGE: bash install_hysteria_final.sh
+#
+#   DESCRIPTION: The definitive, robust, and safe Hysteria 2 installer.
+#                It performs full system upgrades and ensures a stable environment.
 #
 #================================================================================
 
@@ -23,7 +25,7 @@ log_warning() { echo -e "${YELLOW}[!] ${1}${NC}"; }
 log_error() { echo -e "${RED}[✗] ${1}${NC}" >&2; }
 
 # --- Main Script ---
-trap 'log_error "An error occurred at line $LINENO. Aborting."; exit 1' ERR
+trap 'log_error "An error occurred. Aborting installation."; exit 1' ERR
 
 log_info "Starting Hysteria 2 Definitive Installation..."
 
@@ -42,15 +44,24 @@ if [ -z "$DOMAIN" ] || [ -z "$PASSWORD" ] || [ -z "$EMAIL" ]; then
     exit 1
 fi
 
-# 3. Full System Upgrade & Dependency Installation
-log_info "Performing full system update, upgrade, and installing dependencies..."
+# 3. Full System Upgrade (Crucial Step)
+log_info "Performing full system update and upgrade. This may take a few minutes..."
 apt-get update -y
 apt-get upgrade -y
-apt-get install -y curl wget socat ca-certificates
-log_success "System updated and dependencies installed."
+log_success "System packages updated and upgraded."
 
-# 4. Download Hysteria 2 STABLE version (v2.6.1)
-HYSTERIA_VERSION="v2.6.1" # LOCKING to the most stable version
+# 4. Install Essential Packages
+log_info "Installing essential packages: curl, wget, socat, ntpdate, ca-certificates..."
+apt-get install -y curl wget socat ntpdate ca-certificates
+log_success "Essential packages installed."
+
+# 5. Sync System Time
+log_info "Synchronizing system time with time.cloudflare.com..."
+ntpdate time.cloudflare.com
+log_success "System time synchronized."
+
+# 6. Download Hysteria 2
+HYSTERIA_VERSION=$(curl -s "https://api.github.com/repos/apernet/hysteria/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 ARCH=$(uname -m)
 case $ARCH in
     x86_64) ARCH_TAG="amd64" ;;
@@ -59,19 +70,13 @@ case $ARCH in
 esac
 DOWNLOAD_URL="https://github.com/apernet/hysteria/releases/download/${HYSTERIA_VERSION}/hysteria-linux-${ARCH_TAG}"
 
-log_info "Downloading Hysteria 2 STABLE version ${HYSTERIA_VERSION} with cURL..."
-# Use curl instead of wget for better reliability with redirects
-if curl -L -o /usr/local/bin/hysteria "$DOWNLOAD_URL"; then
-    log_success "Download successful."
-else
-    log_error "Download failed. Please check network or URL."
-    exit 1
-fi
+log_info "Downloading Hysteria 2 version ${HYSTERIA_VERSION} for ${ARCH_TAG}..."
+wget -O /usr/local/bin/hysteria "$DOWNLOAD_URL"
 chmod +x /usr/local/bin/hysteria
-log_success "Hysteria 2 binary (v2.6.1) installed."
+log_success "Hysteria 2 binary installed."
 
-# 5. Create Configuration File (Using explicit format for max compatibility)
-log_info "Creating configuration file..."
+# 7. Create Configuration File
+log_info "Creating configuration file at /etc/hysteria/config.yaml..."
 mkdir -p /etc/hysteria
 cat <<EOF > /etc/hysteria/config.yaml
 listen: :443
@@ -87,7 +92,7 @@ auth:
 EOF
 log_success "Configuration file created."
 
-# 6. Create Systemd Service
+# 8. Create Systemd Service
 log_info "Creating systemd service file..."
 cat <<EOF > /etc/systemd/system/hysteria-server.service
 [Unit]
@@ -109,15 +114,15 @@ WantedBy=multi-user.target
 EOF
 log_success "Systemd service file created."
 
-# 7. Start and Enable Service
+# 9. Start and Enable Service
 log_info "Reloading systemd, enabling and starting Hysteria 2 service..."
 systemctl daemon-reload
 systemctl enable hysteria-server.service
 systemctl start hysteria-server.service
 log_success "Hysteria 2 service started and enabled."
 
-# 8. Final Check and Instructions
+# 10. Final Check and Instructions
 sleep 2
 systemctl status hysteria-server.service --no-pager
-log_success "Installation of Hysteria 2 v2.6.1 is complete! Please check the status above."
-log_warning "Firewall is not configured. Please manually allow TCP 80, UDP 443, and your SSH port."
+log_success "Installation complete! Please check the status above."
+log_info "Now, please configure your firewall to allow TCP 80 and UDP 443."

@@ -2,105 +2,71 @@
 
 #================================================================================
 #
-#          FILE: install_hysteria_v2.sh
+#          FILE: install_hysteria_definitive.sh
 #
-#         USAGE: bash install_hysteria_v2.sh
-#
-#   DESCRIPTION: A safe and transparent script to install Hysteria 2 (Version 2).
-#                It interactively asks for all necessary info, including email.
+#   DESCRIPTION: The Definitive Hysteria 2 Installer, using a specific stable
+#                version (v2.6.1) to ensure maximum compatibility.
 #
 #================================================================================
 
-# Set script to exit immediately if any command fails
-set -e
+# --- Colors and Marks for Logging ---
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[1;94m'
+NC='\033[0m'
 
 # --- Function Definitions ---
-detect_os() {
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        OS=$NAME
-        if [ "$ID" = "debian" ] || [ "$ID" = "ubuntu" ]; then
-            PKG_MANAGER="apt-get"
-        elif [ "$ID" = "centos" ] || [ "$ID" = "fedora" ] || [ "$ID" = "rhel" ]; then
-            PKG_MANAGER="yum"
-        else
-            echo "Unsupported operating system: $OS"
-            exit 1
-        fi
-    else
-        echo "Cannot detect operating system."
-        exit 1
-    fi
-}
+log_info() { echo -e "${BLUE}[i] ${1}${NC}"; }
+log_success() { echo -e "${GREEN}[✓] ${1}${NC}"; }
+log_warning() { echo -e "${YELLOW}[!] ${1}${NC}"; }
+log_error() { echo -e "${RED}[✗] ${1}${NC}" >&2; }
 
 # --- Main Script ---
+trap 'log_error "An error occurred at line $LINENO. Aborting."; exit 1' ERR
+
+log_info "Starting Hysteria 2 Definitive Installation..."
 
 # 1. Check for Root Access
 if [ "$(id -u)" -ne 0 ]; then
-   echo "This script must be run as root. Please use sudo or log in as root." 1>&2
+   log_error "This script must be run as root."
    exit 1
 fi
 
-# 2. Get User Input First
-read -p "Please enter your domain name (e.g., your.domain.com): " DOMAIN
-if [ -z "$DOMAIN" ]; then
-    echo "Domain name cannot be empty."
+# 2. Get User Input
+read -p "Enter your domain name (e.g., your.domain.com): " DOMAIN
+read -p "Enter a simple password (letters/numbers only): " PASSWORD
+read -p "Enter your email for Let's Encrypt: " EMAIL
+if [ -z "$DOMAIN" ] || [ -z "$PASSWORD" ] || [ -z "$EMAIL" ]; then
+    log_error "Domain, password, and email cannot be empty."
     exit 1
 fi
 
-read -p "Please enter the password for Hysteria 2 connection: " PASSWORD
-if [ -z "$PASSWORD" ]; then
-    echo "Password cannot be empty."
-    exit 1
-fi
+# 3. Full System Upgrade & Dependency Installation
+log_info "Performing full system update, upgrade, and installing dependencies..."
+apt-get update -y
+apt-get upgrade -y
+apt-get install -y curl wget socat ca-certificates
+log_success "System updated and dependencies installed."
 
-read -p "Please enter your email for Let's Encrypt certificate: " EMAIL
-if [ -z "$EMAIL" ]; then
-    echo "Email cannot be empty."
-    exit 1
-fi
-
-# 3. Detect OS and set package manager
-detect_os
-echo "Detected OS: $OS, Package Manager: $PKG_MANAGER"
-
-# 4. Install Dependencies
-echo "Updating package list and installing dependencies (curl, wget, socat)..."
-if [ "$PKG_MANAGER" = "apt-get" ]; then
-    $PKG_MANAGER update -y
-    $PKG_MANAGER install -y curl wget socat
-elif [ "$PKG_MANAGER" = "yum" ]; then
-    $PKG_MANAGER install -y curl wget socat
-fi
-echo "Dependencies installed."
-
-# 5. Get latest Hysteria version and download URL
-echo "Fetching latest Hysteria 2 version..."
-LATEST_VERSION=$(curl -s "https://api.github.com/repos/apernet/hysteria/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-if [ -z "$LATEST_VERSION" ]; then
-    echo "Failed to fetch latest version tag."
-    exit 1
-fi
-echo "Latest version is: $LATEST_VERSION"
-
+# 4. Download Hysteria 2 STABLE version (v2.6.1)
+HYSTERIA_VERSION="v2.6.1" # LOCKING to the most stable version
 ARCH=$(uname -m)
 case $ARCH in
     x86_64) ARCH_TAG="amd64" ;;
     aarch64) ARCH_TAG="arm64" ;;
-    *) echo "Unsupported architecture: $ARCH"; exit 1 ;;
+    *) log_error "Unsupported architecture: $ARCH"; exit 1 ;;
 esac
-DOWNLOAD_URL="https://github.com/apernet/hysteria/releases/download/${LATEST_VERSION}/hysteria-linux-${ARCH_TAG}"
+DOWNLOAD_URL="https://github.com/apernet/hysteria/releases/download/${HYSTERIA_VERSION}/hysteria-linux-${ARCH_TAG}"
 
-# 6. Download and Install Hysteria
-echo "Downloading Hysteria binary from official source..."
+log_info "Downloading Hysteria 2 STABLE version ${HYSTERIA_VERSION} for ${ARCH_TAG}..."
 wget -O /usr/local/bin/hysteria "$DOWNLOAD_URL"
 chmod +x /usr/local/bin/hysteria
-echo "Hysteria binary installed in /usr/local/bin/hysteria"
+log_success "Hysteria 2 binary (v2.6.1) installed."
 
-# 7. Create Configuration Directory and File
-echo "Creating configuration directory and file..."
+# 5. Create Configuration File (Using explicit format for max compatibility)
+log_info "Creating configuration file..."
 mkdir -p /etc/hysteria
-
 cat <<EOF > /etc/hysteria/config.yaml
 listen: :443
 
@@ -113,14 +79,14 @@ auth:
   type: password
   password: $PASSWORD
 EOF
-echo "Configuration file created at /etc/hysteria/config.yaml"
+log_success "Configuration file created."
 
-# 8. Create systemd Service File
-echo "Creating systemd service file..."
+# 6. Create Systemd Service
+log_info "Creating systemd service file..."
 cat <<EOF > /etc/systemd/system/hysteria-server.service
 [Unit]
-Description=Hysteria 2 Service (Server)
-After=network.target
+Description=Hysteria 2 Service
+After=network.target nss-lookup.target
 
 [Service]
 Type=simple
@@ -135,26 +101,17 @@ LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target
 EOF
-echo "Systemd service file created at /etc/systemd/system/hysteria-server.service"
+log_success "Systemd service file created."
 
-# 9. Start and Enable Service
-echo "Reloading systemd, enabling and starting Hysteria 2 service..."
+# 7. Start and Enable Service
+log_info "Reloading systemd, enabling and starting Hysteria 2 service..."
 systemctl daemon-reload
 systemctl enable hysteria-server.service
 systemctl start hysteria-server.service
+log_success "Hysteria 2 service started and enabled."
 
-# 10. Check Service Status and Final Output
+# 8. Final Check and Instructions
 sleep 2
 systemctl status hysteria-server.service --no-pager
-
-echo ""
-echo "=================================================================="
-echo " Hysteria 2 Installation Complete!"
-echo "=================================================================="
-echo " Your Domain: $DOMAIN"
-echo " Your Port: 443"
-echo " Your Connection Password: $PASSWORD"
-echo " Your Email: $EMAIL"
-echo ""
-echo " You can use 'systemctl status hysteria-server.service' to check the status."
-echo "=================================================================="
+log_success "Installation of Hysteria 2 v2.6.1 is complete! Please check the status above."
+log_warning "Firewall is not configured. Please manually allow TCP 80, UDP 443, and your SSH port."

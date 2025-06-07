@@ -59,8 +59,14 @@ case $ARCH in
 esac
 DOWNLOAD_URL="https://github.com/apernet/hysteria/releases/download/${HYSTERIA_VERSION}/hysteria-linux-${ARCH_TAG}"
 
-log_info "Downloading Hysteria 2 STABLE version ${HYSTERIA_VERSION} for ${ARCH_TAG}..."
-wget -O /usr/local/bin/hysteria "$DOWNLOAD_URL"
+log_info "Downloading Hysteria 2 STABLE version ${HYSTERIA_VERSION} with cURL..."
+# Use curl instead of wget for better reliability with redirects
+if curl -L -o /usr/local/bin/hysteria "$DOWNLOAD_URL"; then
+    log_success "Download successful."
+else
+    log_error "Download failed. Please check network or URL."
+    exit 1
+fi
 chmod +x /usr/local/bin/hysteria
 log_success "Hysteria 2 binary (v2.6.1) installed."
 

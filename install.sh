@@ -254,16 +254,7 @@ acme:
   ca: letsencrypt
   listenHost: 0.0.0.0
   
-# TLS配置优化（关键：解决TLS握手问题）
-tls:
-  cert: ""
-  key: ""
-  minVersion: "1.2"
-  maxVersion: "1.3"
-  cipherSuites:
-    - "TLS_AES_128_GCM_SHA256"
-    - "TLS_AES_256_GCM_SHA384"
-    - "TLS_CHACHA20_POLY1305_SHA256"
+
   
 # 认证配置（简化以避免特殊字符问题）
 auth:

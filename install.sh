@@ -2,10 +2,10 @@
 
 #================================================================================
 #
-#          FILE: install_hysteria_definitive.sh
+#          FILE: install_hysteria_definitive_v2.sh
 #
-#   DESCRIPTION: The Definitive Hysteria 2 Installer, using a specific stable
-#                version (v2.6.1) to ensure maximum compatibility.
+#   DESCRIPTION: The Truly Definitive Hysteria 2 Installer, using curl
+#                for robust downloading and a specific stable version.
 #
 #================================================================================
 
@@ -49,8 +49,8 @@ apt-get upgrade -y
 apt-get install -y curl wget socat ca-certificates
 log_success "System updated and dependencies installed."
 
-# 4. Download Hysteria 2 STABLE version (v2.6.1)
-HYSTERIA_VERSION="v2.6.1" # LOCKING to the most stable version
+# 4. Download Hysteria 2 STABLE version (v2.6.1) using cURL
+HYSTERIA_VERSION="v2.6.1"
 ARCH=$(uname -m)
 case $ARCH in
     x86_64) ARCH_TAG="amd64" ;;
@@ -59,12 +59,18 @@ case $ARCH in
 esac
 DOWNLOAD_URL="https://github.com/apernet/hysteria/releases/download/${HYSTERIA_VERSION}/hysteria-linux-${ARCH_TAG}"
 
-log_info "Downloading Hysteria 2 STABLE version ${HYSTERIA_VERSION} for ${ARCH_TAG}..."
-wget -O /usr/local/bin/hysteria "$DOWNLOAD_URL"
+log_info "Downloading Hysteria 2 STABLE version ${HYSTERIA_VERSION} with cURL..."
+# Use curl instead of wget for better reliability with redirects
+if curl -L -o /usr/local/bin/hysteria "$DOWNLOAD_URL"; then
+    log_success "Download successful."
+else
+    log_error "Download failed. Please check network or URL."
+    exit 1
+fi
 chmod +x /usr/local/bin/hysteria
 log_success "Hysteria 2 binary (v2.6.1) installed."
 
-# 5. Create Configuration File (Using explicit format for max compatibility)
+# 5. Create Configuration File
 log_info "Creating configuration file..."
 mkdir -p /etc/hysteria
 cat <<EOF > /etc/hysteria/config.yaml

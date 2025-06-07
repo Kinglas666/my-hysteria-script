@@ -251,6 +251,7 @@ acme:
   domains:
     - ${DOMAIN}
   email: ${EMAIL}
+  storage: /etc/hysteria/certs
   ca: letsencrypt
   listenHost: 0.0.0.0
   
@@ -306,32 +307,28 @@ create_service() {
     
     cat > /etc/systemd/system/hysteria-server.service << EOF
 [Unit]
-Description=Hysteria 2 Server Service (Optimized)
+Description=Hysteria 2 Server Service (Optimized v3.2)
 Documentation=https://v2.hysteria.network/
-After=network.target nss-lookup.target network-online.target
+After=network.target
 Wants=network-online.target
 
 [Service]
 Type=simple
 User=root
 Group=root
+ExecStartPre=/bin/mkdir -p /etc/hysteria/certs # <--- 新增此行，确保目录存在
 ExecStart=/usr/local/bin/hysteria server --config /etc/hysteria/config.yaml
-ExecReload=/bin/kill -HUP \$MAINPID
+WorkingDirectory=/etc/hysteria
 Restart=always
 RestartSec=5
-TimeoutStopSec=5
 LimitNOFILE=1048576
-LimitNPROC=1048576
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=hysteria-server
 
 # 安全设置
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/etc/hysteria
+ReadWritePaths=/etc/hysteria #
 
 # 环境变量
 Environment=HYSTERIA_LOG_LEVEL=info

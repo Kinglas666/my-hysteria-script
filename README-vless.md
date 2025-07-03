@@ -23,4 +23,4 @@
 通过 SSH 连接到您的 VPS，然后执行以下单行命令即可开始部署。脚本会自动获取 `root` 权限。
 
 ```bash
-wget -O install-vless.sh [https://github.com/Kinglas666/my-hysteria-script/blob/main/install-vless.sh] && sudo bash install-vless.sh
+wget -O install-vless.sh https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install-vless.sh && sudo bash install-vless.sh

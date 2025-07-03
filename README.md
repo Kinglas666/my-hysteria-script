@@ -66,27 +66,13 @@ If you are using `ufw`:
 如果你在使用 `ufw` 防火墙：
 
 ```bash
-# Allow Hysteria 2 traffic (UDP, port 443 is default in the script)
-# 开放 Hysteria 2 的端口 (默认为 UDP 443)
-sudo ufw allow 443/udp
+# 开放端口
+ufw allow 443/udp
+ufw allow 80/tcp
+ufw allow ssh
 
-# Allow ACME certificate validation (TCP, port 80)
-# 开放 ACME 证书验证所需的端口 (TCP 80)
-sudo ufw allow 80/tcp
-
-# (Optional) Allow SSH, so you don't lock yourself out
-# (可选) 开放 SSH 端口，防止把自己锁在外面
-sudo ufw allow ssh
-
-# Enable the firewall
 # 启用防火墙
-sudo ufw enable
-
-# Check the status
-# 检查状态
-sudo ufw status
-```
-
+ufw enable
 ---
 
 ## 🕹️ Management Commands / 管理命令

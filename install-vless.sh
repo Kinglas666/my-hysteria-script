@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# VLESS-Reality 一键安装脚本
-# 作者: Your Name (根据 mack-a 脚本精简和重构)
-# Github: your-github-repo-url
+# VLESS-Reality 一键安装脚本 (修复版)
+# 修复了 Reality 配置和连接问题
 
 # --- 配置和常量 ---
 # 使用颜色输出
@@ -18,10 +17,9 @@ XRAY_PATH="${INSTALL_PATH}/xray"
 XRAY_CONFIG_PATH="${XRAY_PATH}/conf"
 XRAY_INFO_FILE="${INSTALL_PATH}/vless_info.txt"
 
-# Reality 目标服务器 (一个大型、可靠、支持TLS 1.3的网站)
-REALITY_SNI="www.microsoft.com"
+# Reality 目标服务器 (更换为更稳定的目标)
+REALITY_SNI="www.yahoo.com"
 REALITY_DEST_PORT=443
-
 
 # --- 函数定义 ---
 
@@ -45,20 +43,25 @@ update_system() {
 # 安装依赖
 install_prereqs() {
     echo -e "${SKYBLUE}---> 2. 正在安装必要的依赖软件...${NC}"
-    apt install -y wget curl unzip ufw qrencode jq > /dev/null 2>&1
+    apt install -y wget curl unzip ufw qrencode jq openssl > /dev/null 2>&1
     echo -e "${GREEN}依赖软件安装完成。${NC}"
 }
 
 # 获取用户输入的端口
 get_user_port() {
     while true; do
-        read -p "$(echo -e ${YELLOW}"请输入 VLESS 端口号 (建议范围 35000-36000): "${NC})" VLESS_PORT
+        read -p "$(echo -e ${YELLOW}"请输入 VLESS 端口号 (建议范围 10000-65000): "${NC})" VLESS_PORT
         # 检查输入是否为数字
-        if [[ "$VLESS_PORT" =~ ^[0-9]+$ ]] && [ "$VLESS_PORT" -gt 0 ] && [ "$VLESS_PORT" -le 65535 ]; then
-            echo -e "${GREEN}VLESS 将使用端口: ${VLESS_PORT}${NC}"
-            break
+        if [[ "$VLESS_PORT" =~ ^[0-9]+$ ]] && [ "$VLESS_PORT" -gt 1024 ] && [ "$VLESS_PORT" -le 65535 ]; then
+            # 检查端口是否被占用
+            if ! netstat -tuln | grep -q ":$VLESS_PORT "; then
+                echo -e "${GREEN}VLESS 将使用端口: ${VLESS_PORT}${NC}"
+                break
+            else
+                echo -e "${RED}端口 ${VLESS_PORT} 已被占用，请选择其他端口。${NC}"
+            fi
         else
-            echo -e "${RED}输入无效。请输入一个 1-65535 之间的数字。${NC}"
+            echo -e "${RED}输入无效。请输入一个 1024-65535 之间的数字。${NC}"
         fi
     done
 }
@@ -77,6 +80,9 @@ install_xray() {
         'aarch64' | 'arm64')
             CPU_VENDOR="Xray-linux-arm64-v8a"
             ;;
+        'armv7l')
+            CPU_VENDOR="Xray-linux-arm32-v7a"
+            ;;
         *)
             echo -e "${RED}错误: 不支持的CPU架构: $ARCH${NC}"
             exit 1
@@ -85,14 +91,21 @@ install_xray() {
 
     # 获取最新版本号
     LATEST_VERSION=$(curl -s "https://api.github.com/repos/XTLS/Xray-core/releases/latest" | jq -r '.tag_name')
-    if [ -z "$LATEST_VERSION" ]; then
-        echo -e "${RED}错误: 无法获取 Xray-core 最新版本号。请检查网络连接或 Github API 状态。${NC}"
-        exit 1
+    if [ -z "$LATEST_VERSION" ] || [ "$LATEST_VERSION" == "null" ]; then
+        echo -e "${YELLOW}警告: 无法获取最新版本，使用默认版本 v1.8.4${NC}"
+        LATEST_VERSION="v1.8.4"
     fi
-    echo -e "${GREEN}检测到 Xray-core 最新版本: ${LATEST_VERSION}${NC}"
+    echo -e "${GREEN}使用 Xray-core 版本: ${LATEST_VERSION}${NC}"
 
     # 下载并解压
-    wget -qO "${XRAY_PATH}/xray.zip" "https://github.com/XTLS/Xray-core/releases/download/${LATEST_VERSION}/${CPU_VENDOR}.zip"
+    DOWNLOAD_URL="https://github.com/XTLS/Xray-core/releases/download/${LATEST_VERSION}/${CPU_VENDOR}.zip"
+    echo -e "${SKYBLUE}正在下载: ${DOWNLOAD_URL}${NC}"
+    
+    if ! wget -qO "${XRAY_PATH}/xray.zip" "${DOWNLOAD_URL}"; then
+        echo -e "${RED}错误: 下载 Xray-core 失败。${NC}"
+        exit 1
+    fi
+    
     unzip -o "${XRAY_PATH}/xray.zip" -d "${XRAY_PATH}" > /dev/null 2>&1
     rm "${XRAY_PATH}/xray.zip"
     chmod +x "${XRAY_PATH}/xray"
@@ -102,6 +115,11 @@ install_xray() {
         exit 1
     fi
     echo -e "${GREEN}Xray-core 安装成功。${NC}"
+}
+
+# 生成随机的 shortId
+generate_short_id() {
+    openssl rand -hex 8 | cut -c1-8
 }
 
 # 生成 VLESS-Reality 配置文件
@@ -114,14 +132,23 @@ generate_vless_reality_config() {
     PRIVATE_KEY=$(echo "$KEYS" | awk '/Private key:/ {print $3}')
     PUBLIC_KEY=$(echo "$KEYS" | awk '/Public key:/ {print $3}')
     
+    # 生成随机的 shortId
+    SHORT_ID=$(generate_short_id)
+    
     # 将配置信息保存到变量中，便于后续显示
     VLESS_UUID=${UUID}
     VLESS_PRIVATE_KEY=${PRIVATE_KEY}
     VLESS_PUBLIC_KEY=${PUBLIC_KEY}
+    VLESS_SHORT_ID=${SHORT_ID}
 
     # 创建配置文件
-    cat > "${XRAY_CONFIG_PATH}/01_vless_reality.json" <<EOF
+    cat > "${XRAY_CONFIG_PATH}/config.json" <<EOF
 {
+  "log": {
+    "loglevel": "info",
+    "access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log"
+  },
   "inbounds": [
     {
       "listen": "0.0.0.0",
@@ -149,7 +176,7 @@ generate_vless_reality_config() {
           "privateKey": "${VLESS_PRIVATE_KEY}",
           "maxTimeDiff": 60000,
           "shortIds": [
-            ""
+            "${VLESS_SHORT_ID}"
           ]
         }
       },
@@ -158,30 +185,44 @@ generate_vless_reality_config() {
         "destOverride": ["http", "tls"]
       }
     }
-  ]
-}
-EOF
-    
-    # 创建基础日志和DNS配置
-    cat > "${XRAY_CONFIG_PATH}/00_log.json" <<'EOF'
-{
-  "log": {
-    "loglevel": "warning"
-  }
-}
-EOF
-    cat > "${XRAY_CONFIG_PATH}/10_dns.json" <<'EOF'
-{
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIPv4"
+      },
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "blocked"
+    }
+  ],
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "protocol": ["bittorrent"],
+        "outboundTag": "blocked"
+      }
+    ]
+  },
   "dns": {
     "servers": [
-      "https-dns.hkg.ap.nextdns.io",
-      "1.1.1.1",
       "8.8.8.8",
-      "localhost"
+      "1.1.1.1",
+      "114.114.114.114"
     ]
   }
 }
 EOF
+
+    # 创建日志目录
+    mkdir -p /var/log/xray
+    touch /var/log/xray/access.log /var/log/xray/error.log
 
     echo -e "${GREEN}配置文件生成成功。${NC}"
 }
@@ -197,7 +238,7 @@ After=network.target nss-lookup.target
 
 [Service]
 User=root
-ExecStart=${XRAY_PATH}/xray run -confdir ${XRAY_CONFIG_PATH}
+ExecStart=${XRAY_PATH}/xray run -config ${XRAY_CONFIG_PATH}/config.json
 Restart=on-failure
 RestartPreventExitStatus=23
 LimitNPROC=10000
@@ -214,49 +255,67 @@ EOF
 
 # 配置防火墙
 setup_firewall() {
-    echo -e "${SKYBLUE}---> 6. 正在配置 UFW 防火墙...${NC}"
+    echo -e "${SKYBLUE}---> 6. 正在配置防火墙...${NC}"
     
-    # 禁用以避免冲突
-    systemctl stop ufw > /dev/null 2>&1
-
-    # 开放必要端口
-    ufw allow ssh > /dev/null 2>&1
-    ufw allow 80/tcp > /dev/null 2>&1
-    ufw allow 443/udp > /dev/null 2>&1 # for QUIC
-    ufw allow ${VLESS_PORT}/tcp > /dev/null 2>&1
-    ufw allow ${VLESS_PORT}/udp > /dev/null 2>&1
-
-    # 启用防火墙
-    ufw --force enable
-    
-    echo -e "${GREEN}防火墙配置完成。已开放端口: SSH, 80/tcp, 443/udp, ${VLESS_PORT}/tcp+udp${NC}"
+    # 检查是否已安装 ufw
+    if command -v ufw >/dev/null 2>&1; then
+        # 重置 ufw 规则
+        ufw --force reset > /dev/null 2>&1
+        
+        # 设置默认规则
+        ufw default deny incoming > /dev/null 2>&1
+        ufw default allow outgoing > /dev/null 2>&1
+        
+        # 允许 SSH
+        ufw allow ssh > /dev/null 2>&1
+        ufw allow 22/tcp > /dev/null 2>&1
+        
+        # 允许 VLESS 端口
+        ufw allow ${VLESS_PORT}/tcp > /dev/null 2>&1
+        
+        # 启用防火墙
+        ufw --force enable > /dev/null 2>&1
+        echo -e "${GREEN}UFW 防火墙配置完成。${NC}"
+    else
+        echo -e "${YELLOW}未检测到 UFW，跳过防火墙配置。${NC}"
+    fi
 }
-
 
 # 启动服务并显示节点信息
 start_and_display_info() {
     echo -e "${SKYBLUE}---> 7. 正在启动 Xray 服务并生成节点信息...${NC}"
+    
+    # 启动服务
     systemctl start xray
     
-    # 稍作等待，确保服务已启动
-    sleep 2
+    # 等待服务启动
+    sleep 3
 
     # 检查服务状态
     if ! systemctl is-active --quiet xray; then
         echo -e "${RED}错误: Xray 服务启动失败。${NC}"
-        echo -e "${YELLOW}请运行 'sudo systemctl status xray' 或 'journalctl -u xray -e' 查看日志。${NC}"
+        echo -e "${YELLOW}正在查看服务状态...${NC}"
+        systemctl status xray --no-pager
+        echo -e "${YELLOW}正在查看日志...${NC}"
+        journalctl -u xray -n 20 --no-pager
         exit 1
     fi
 
     # 获取公网 IP
-    PUBLIC_IP=$(curl -s ip.sb)
+    PUBLIC_IP=$(curl -s --max-time 10 ipv4.icanhazip.com)
+    if [ -z "$PUBLIC_IP" ]; then
+        PUBLIC_IP=$(curl -s --max-time 10 ip.sb)
+    fi
+    if [ -z "$PUBLIC_IP" ]; then
+        PUBLIC_IP=$(curl -s --max-time 10 ifconfig.me)
+    fi
     if [ -z "$PUBLIC_IP" ]; then
         echo -e "${RED}错误: 无法获取公网 IP 地址。${NC}"
         exit 1
     fi
 
     # 生成 VLESS 链接
-    VLESS_URL="vless://${VLESS_UUID}@${PUBLIC_IP}:${VLESS_PORT}?encryption=none&security=reality&sni=${REALITY_SNI}&fp=chrome&pbk=${VLESS_PUBLIC_KEY}&sid=&type=tcp&flow=xtls-rprx-vision#VLESS-Reality"
+    VLESS_URL="vless://${VLESS_UUID}@${PUBLIC_IP}:${VLESS_PORT}?encryption=none&security=reality&sni=${REALITY_SNI}&fp=chrome&pbk=${VLESS_PUBLIC_KEY}&sid=${VLESS_SHORT_ID}&type=tcp&flow=xtls-rprx-vision#VLESS-Reality-${PUBLIC_IP}"
 
     # 清空并写入信息文件
     > "${XRAY_INFO_FILE}"
@@ -270,6 +329,8 @@ start_and_display_info() {
     echo "安全 (Security): reality" >> "${XRAY_INFO_FILE}"
     echo "SNI: ${REALITY_SNI}" >> "${XRAY_INFO_FILE}"
     echo "公钥 (PublicKey): ${VLESS_PUBLIC_KEY}" >> "${XRAY_INFO_FILE}"
+    echo "短ID (ShortId): ${VLESS_SHORT_ID}" >> "${XRAY_INFO_FILE}"
+    echo "指纹 (Fingerprint): chrome" >> "${XRAY_INFO_FILE}"
     echo "=============================================" >> "${XRAY_INFO_FILE}"
     echo "VLESS 链接 (URL):" >> "${XRAY_INFO_FILE}"
     echo "${VLESS_URL}" >> "${XRAY_INFO_FILE}"
@@ -282,12 +343,18 @@ start_and_display_info() {
     cat "${XRAY_INFO_FILE}"
     echo -e "\n${GREEN}安装成功！节点信息已保存在: ${YELLOW}${XRAY_INFO_FILE}${NC}"
     echo -e "${GREEN}您可以使用 'cat ${XRAY_INFO_FILE}' 命令随时查看。${NC}"
+    echo -e "\n${SKYBLUE}管理命令:${NC}"
+    echo -e "启动服务: ${YELLOW}systemctl start xray${NC}"
+    echo -e "停止服务: ${YELLOW}systemctl stop xray${NC}"
+    echo -e "重启服务: ${YELLOW}systemctl restart xray${NC}"
+    echo -e "查看状态: ${YELLOW}systemctl status xray${NC}"
+    echo -e "查看日志: ${YELLOW}journalctl -u xray -f${NC}"
 }
 
 # --- 主逻辑 ---
 main() {
     clear
-    echo -e "${GREEN}欢迎使用 VLESS-Reality 一键安装脚本！${NC}"
+    echo -e "${GREEN}欢迎使用 VLESS-Reality 一键安装脚本！(修复版)${NC}"
     echo "----------------------------------------"
     
     check_root
@@ -302,6 +369,7 @@ main() {
     
     echo "----------------------------------------"
     echo -e "${GREEN}部署流程全部完成。${NC}"
+    echo -e "${YELLOW}注意: 如果连接失败，请检查服务器防火墙设置和安全组配置。${NC}"
 }
 
 main

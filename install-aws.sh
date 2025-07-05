@@ -2,8 +2,8 @@
 
 #================================================================================
 #
-#          FILE: install.sh
-#         USAGE: bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install.sh)
+#          FILE: install-aws.sh
+#         USAGE: bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install-aws.sh)
 #   DESCRIPTION: AWS EC2 优化版 Hysteria 2 安装脚本
 #                专门针对亚马逊云服务器环境优化
 #        AUTHOR: Kinglas & AI Assistant

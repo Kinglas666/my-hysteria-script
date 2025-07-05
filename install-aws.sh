@@ -73,7 +73,7 @@ cleanup_on_error() {
 check_root() {
     if [[ $EUID -ne 0 ]]; then
         log_error "此脚本需要root权限运行"
-        log_info "请使用: sudo bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install.sh)"
+        log_info "请使用: sudo bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install-aws.sh)"
         exit 1
     fi
 }

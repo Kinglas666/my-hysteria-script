@@ -2,8 +2,8 @@
 
 #================================================================================
 #
-#          FILE: install-aws.sh
-#         USAGE: bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install-aws.sh)
+#          FILE: install.sh
+#         USAGE: bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install.sh)
 #   DESCRIPTION: AWS EC2 优化版 Hysteria 2 安装脚本
 #                专门针对亚马逊云服务器环境优化
 #        AUTHOR: Kinglas & AI Assistant
@@ -73,7 +73,7 @@ cleanup_on_error() {
 check_root() {
     if [[ $EUID -ne 0 ]]; then
         log_error "此脚本需要root权限运行"
-        log_info "请使用: sudo bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install-aws.sh)"
+        log_info "请使用: sudo bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install.sh)"
         exit 1
     fi
 }
@@ -677,3 +677,38 @@ show_result() {
     echo -e "  2. AWS安全组必须开放相应端口"
     echo -e "  3. 首次连接可能需要等待1-2分钟让证书生效"
     echo -e "  4. 如有连接问题，请检查AWS安全组和防火墙设置"
+    echo
+    echo -e "${GREEN}============================================${NC}"
+    
+    # 显示连接信息文件内容
+    if [[ -f /root/hysteria-client/connection-info.txt ]]; then
+        echo -e "${BLUE}查看完整连接信息:${NC}"
+        echo -e "${CYAN}cat /root/hysteria-client/connection-info.txt${NC}"
+    fi
+}
+
+# --- 主函数 ---
+main() {
+    show_banner
+    check_root
+    check_system
+    get_user_input
+    optimize_system
+    download_hysteria
+    create_config
+    create_service
+    configure_firewall
+    start_and_test
+    generate_client_config
+    show_result
+    
+    log_success "Hysteria 2 AWS优化版安装完成！"
+    echo
+    log_info "如有问题，请查看日志:"
+    log_info "  系统日志: journalctl -u hysteria-server -f"
+    log_info "  安装日志: cat /var/log/hysteria-install.log"
+    log_info "技术支持: 请检查AWS安全组、配置文件和防火墙设置"
+}
+
+# --- 执行主函数 ---
+main "$@"

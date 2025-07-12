@@ -81,7 +81,7 @@ ufw enable
 ---
 
 ## 🕹️ Management Commands / 管理命令
-
+```
 | Command (命令)                                    | Description (描述)                            |
 | ------------------------------------------------- | --------------------------------------------- |
 | `sudo systemctl start hysteria-server.service`    | 🇬🇧 Start the service / 🇨🇳 启动服务          |
@@ -90,7 +90,7 @@ ufw enable
 | `sudo systemctl status hysteria-server.service`   | 🇬🇧 Check the status / 🇨🇳 查看状态           |
 | `sudo systemctl enable hysteria-server.service`   | 🇬🇧 Enable auto-start on boot / 🇨🇳 设置开机自启 |
 | `sudo systemctl disable hysteria-server.service`  | 🇬🇧 Disable auto-start on boot / 🇨🇳 取消开机自启 |
-
+```
 The configuration file is located at `/etc/hysteria/config.yaml`.
 <br>
 配置文件位于 `/etc/hysteria/config.yaml`。

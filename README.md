@@ -49,6 +49,11 @@ Connect to your VPS and run the following command.
 bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install.sh)
 ```
 
+亚马逊VPS  hysteria 2 协议
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install-aws.sh)
+```
+
 The script will then guide you to enter your domain name and your desired Hysteria 2 access password.
 
 脚本将引导你输入你的域名和你希望设定的 Hysteria 2 访问密码。

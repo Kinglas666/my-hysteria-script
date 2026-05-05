@@ -1,0 +1,184 @@
+亚马逊VPS  hysteria 2 协议
+
+sudo -i
+
+bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install-aws.sh)
+
+hysteria2://LfqX70erLgdCeGemPXr@18.144.71.68:443/?sni=aws.devguide.dpdns.org&insecure=0#Hysteria2-AWS-Server
+
+
+aws.devguide.dpdns.org
+
+LfqX70erLgdCeGemPXr
+
+kinglas.luper@gmail.com
+
+
+
+# 开放端口
+ufw allow 443/udp
+ufw allow 80/tcp
+ufw allow ssh
+
+# 启用防火墙
+ufw enable
+
+
+
+
+服务器信息:
+  AWS实例ID: <?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>401 - Unauthorized</title>
+ </head>
+ <body>
+  <h1>401 - Unauthorized</h1>
+ </body>
+</html>
+  AWS区域: <?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>401 - Unauthorized</title>
+ </head>
+ <body>
+  <h1>401 - Unauthorized</h1>
+ </body>
+</html>
+  服务器IP: <?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>401 - Unauthorized</title>
+ </head>
+ <body>
+  <h1>401 - Unauthorized</h1>
+ </body>
+</html>
+  监听端口: 443
+  域名: aws.devguide.dpdns.org
+  密码: LfqX70erLgdCeGemPXr
+
+客户端配置:
+  配置文件: /root/hysteria-client/client.yaml
+  连接信息: /root/hysteria-client/connection-info.txt
+
+分享链接:
+  hysteria2://LfqX70erLgdCeGemPXr@<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>401 - Unauthorized</title>
+ </head>
+ <body>
+  <h1>401 - Unauthorized</h1>
+ </body>
+</html>:443/?sni=aws.devguide.dpdns.org&insecure=0#Hysteria2-AWS-Server
+
+AWS安全组配置检查:
+  重要：请确保在AWS控制台配置以下入站规则：
+  • UDP 443 (来源: 0.0.0.0/0)
+  • TCP 80 (来源: 0.0.0.0/0)
+  • TCP 443 (来源: 0.0.0.0/0)
+
+管理命令:
+  启动服务: systemctl start hysteria-server
+  停止服务: systemctl stop hysteria-server
+  重启服务: systemctl restart hysteria-server
+  查看状态: systemctl status hysteria-server
+  查看日志: journalctl -u hysteria-server -f
+  查看安装日志: cat /var/log/hysteria-install.log
+
+重要提醒:
+  1. 域名DNS必须解析到AWS公网IP: <?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>401 - Unauthorized</title>
+ </head>
+ <body>
+  <h1>401 - Unauthorized</h1>
+ </body>
+</html>
+  2. AWS安全组必须开放相应端口
+  3. 首次连接可能需要等待1-2分钟让证书生效
+  4. 如有连接问题，请检查AWS安全组和防火墙设置
+
+============================================
+查看完整连接信息:
+cat /root/hysteria-client/connection-info.txt
+[SUCCESS] Hysteria 2 AWS优化版安装完成！
+
+[INFO] 如有问题，请查看日志:
+[INFO]   系统日志: journalctl -u hysteria-server -f
+[INFO]   安装日志: cat /var/log/hysteria-install.log
+[INFO] 技术支持: 请检查AWS安全组、配置文件和防火墙设置
+root@ip-172-31-26-213:~# ufw allow 443/udp
+Skipping adding existing rule
+Skipping adding existing rule (v6)
+root@ip-172-31-26-213:~# ufw allow 80/tcp
+Skipping adding existing rule
+Skipping adding existing rule (v6)
+root@ip-172-31-26-213:~# ufw allow ssh
+Skipping adding existing rule
+Skipping adding existing rule (v6)
+root@ip-172-31-26-213:~# ufw enable
+Command may disrupt existing ssh connections. Proceed with operation (y|n)? y
+Firewall is active and enabled on system startup
+root@ip-172-31-26-213:~# cat /root/hysteria-client/connection-info.txt
+=== Hysteria 2 AWS服务器连接信息 ===
+
+服务器地址: <?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>401 - Unauthorized</title>
+ </head>
+ <body>
+  <h1>401 - Unauthorized</h1>
+ </body>
+</html>
+端口: 443
+密码: LfqX70erLgdCeGemPXr
+域名/SNI: aws.devguide.dpdns.org
+协议: Hysteria 2
+
+=== 客户端配置文件 ===
+配置文件位置: /root/hysteria-client/client.yaml
+
+=== 分享链接 ===
+hysteria2://LfqX70erLgdCeGemPXr@<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>401 - Unauthorized</title>
+ </head>
+ <body>
+  <h1>401 - Unauthorized</h1>
+ </body>
+</html>:443/?sni=aws.devguide.dpdns.org&insecure=0#Hysteria2-AWS-Server
+
+=== AWS特别说明 ===
+1. 确保AWS安全组已开放UDP 443端口
+2. 确保AWS安全组已开放TCP 80和443端口
+3. 检查域名DNS解析是否正确指向AWS公网IP: <?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>401 - Unauthorized</title>
+ </head>
+ <body>
+  <h1>401 - Unauthorized</h1>
+ </body>
+</html>
+

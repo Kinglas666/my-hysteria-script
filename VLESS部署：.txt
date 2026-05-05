@@ -1,0 +1,33 @@
+VLESS部署：
+
+IS60kopH1hQR42g7Ao
+
+
+
+
+# 方法1：直接运行
+curl -fsSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install-vless.sh | bash
+
+# 方法2：下载后运行
+wget https://raw.githubusercontent.com/yourusername/yourrepo/main/install-vless-fixed.sh
+chmod +x install-vless-fixed.sh
+sudo ./install-vless-fixed.sh
+
+# 方法3：如果没有上传到GitHub，保存为文件运行
+sudo bash install-vless-fixed.sh
+
+
+客户端配置参数：
+根据脚本生成的信息，在 NekoBox 中手动配置：
+
+协议: VLESS
+地址: 您的服务器IP
+端口: 脚本中设置的端口
+UUID: 脚本生成的UUID
+Flow: xtls-rprx-vision
+传输: tcp
+安全: reality
+SNI: www.yahoo.com
+公钥: 脚本生成的公钥
+短ID: 脚本生成的短ID
+指纹: chrome

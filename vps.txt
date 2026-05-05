@@ -1,0 +1,406 @@
+我自己的github仓库地址   hysteria 2 协议
+
+bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/install.sh)
+
+
+
+
+hysteria2://Myo00pNeQw34RrN920l2I4@23.95.205.238:443/?sni=rn.looney.dpdns.org&insecure=0#Hysteria2-Server
+
+
+
+查看日志
+journalctl -u hysteria-server -f
+
+cat /etc/hysteria/config.yaml    查看我节点信息
+
+
+Server Details
+=============================
+
+2.5 GB KVM VPS (Black Friday 2024) (Server Label: racknerd-cf10ef6)
+
+IP Address: 23.95.205.238
+
+Username: root
+Root/Admin Password: 96g46ILkVEJhw81Znv
+SSH Port 22
+
+You can access your VPS using any SSH program such as PuTTY. Watch this tutorial to learn how.
+
+>> SolusVM Control Panel Access (NerdVM) <<
+=============================
+
+SolusVM Credentials are as follows. Please use SolusVM if you need to restart, console or re-install your VPS.
+
+URL: https://nerdvm.racknerd.com/
+Username: vmuser236637
+Password: 57qG3mZLvF6Vg2Bk0w
+
+(If you already have access to the above control panel please use your existing password)
+
+
+
+
+Installation has been started. Please allow up to 10 minutes for it to complete
+
+Root/Admin Password: 
+
+96g46ILkVEJhw81Znv
+
+
+
+
+域名：
+
+rn.looney.dpdns.org
+
+
+hysteria 2 密码：
+Myo00pNeQw34RrN920l2I4
+邮箱：
+kinglas.luper@gmail.com
+
+查看日志
+journalctl -u hysteria-server -f
+
+
+
+
+
+卸载脚本仓库命令
+
+bash <(curl -sSL https://raw.githubusercontent.com/Kinglas666/my-hysteria-script/main/uninstall.sh)
+
+登录服务器，执行 hy2密码：
+sudo nano /etc/hysteria/config.yaml
+
+
+
+停止 Hysteria 服务。 这很重要，可以确保我们修改配置时没有进程在干扰
+sudo systemctl stop hysteria-server.service
+
+
+启动服务
+sudo systemctl start hysteria-server.service
+sudo systemctl status hysteria-server.service
+
+
+检查服务状态，确保它依然是 active (running)
+
+systemctl status hysteria-server.service
+
+        
+
+# 安装 ufw (如果它还没被安装的话)
+apt update
+apt install ufw -y
+
+
+
+
+
+# 安装 ufw (如果脚本没装的话，Ubuntu Server 版通常自带)
+apt install ufw -y
+
+# 开放端口
+ufw allow 443/udp
+ufw allow 80/tcp
+ufw allow ssh
+
+# 启用防火墙
+ufw enable
+
+
+
+listen: :443
+
+acme:
+  domains:
+    - rn.looney.dpdns.org
+  email: kinglas.luper@gmail.com
+
+auth: MyNewPass2024
+
+
+
+
+
+
+rm -f ~/client.yaml 
+
+
+
+cat <<EOF > ~/client.yaml
+
+
+
+再次执行本地自连测试：
+/usr/local/bin/hysteria client -c ~/client.yaml   
+
+
+
+
+listen: :443
+
+acme:
+  domains:
+    - rn.looney.dpdns.org
+  email: kinglas.luper@gmail.com
+
+auth: MyNewPass2024
+
+
+
+
+# 更新软件包列表
+apt update
+
+# 更新已安装的软件包
+apt upgrade -y
+
+apt upgrade -y
+
+
+162.159.33.46
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cloudflare免费节点搭建教程
+
+在线教程：https://amclubss.com/cloudflare/
+
+项目地址：https://github.com/amclubs/am-cf-tunnel
+
+https://luper.looney.dpdns.org/dfdb6552-f5de-42e7-b5e6-1211b08ab4ab/ui
+
+
+
+
+终端使用帮助
+
+相关快捷键
+
+终端:
+alt 命令历史
+ctrl 切换到命令输入框
+
+命令输入框:
+alt 命令历史
+tab 补全 
+ctrl 切换到终端
+
+列表窗口:
+alt/tab/esc 关闭窗口
+上下箭头 选择行
+ 
+
+
+服务器地址：https://linuxone.cloud.marist.edu/#/instance
+
+一键卸载命令：pkill -f '\.tmp/'
+
+
+	kinglas	
+ACTIVE
+General purpose VM	linux1	kinglas	148.100.108.107	2025-06-02 12:58:35	
+User Name:kinglas.luper@gmail.com
+
+Project Name:kinglas.luper@gmail.com
+
+Time Since Created:0 day 0 hour 10 minutes
+
+Running Time:0 day 0 hour 3 minutes
+
+Flavor ID:cebeede7-44cb-48c1-a610-48d5d3ea9325
+
+Flavor Name:LinuxONE
+
+VCPUS:2
+
+RAM:4096MB
+
+Root Disk:50GB
+
+Attached Disk:n/a
+
+Image ID:86a2ef2e-4235-4b42-a510-07cdb9b3c5bc
+
+Image Name:ubuntu22.04
+
+
+vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogIlVTLU1hcmlzdF9Vbml2ZXJzaXR5XHU3NTI4XHU1MjMwOS0yXHU1M0Y3XHU1MThEXHU2Q0U4XHU1MThDIiwNCiAgImFkZCI6ICJjbG91ZGZsYXJlLjE4MjY4Mi54eXoiLA0KICAicG9ydCI6ICI0NDMiLA0KICAiaWQiOiAiZGEyMGM3NmItMmFlMy00YjhmLTgyNDYtNzJmYmJlNmNjYjhiIiwNCiAgImFpZCI6ICIwIiwNCiAgInNjeSI6ICJub25lIiwNCiAgIm5ldCI6ICJ3cyIsDQogICJ0eXBlIjogIm5vbmUiLA0KICAiaG9zdCI6ICJwYXJlbnQtZGlhZ3JhbS1hdXRob3JpdGllcy1kb21pbmljYW4udHJ5Y2xvdWRmbGFyZS5jb20iLA0KICAicGF0aCI6ICIvdm1lc3MtYXJnbz9lZD0yNTYwIiwNCiAgInRscyI6ICJ0bHMiLA0KICAic25pIjogInBhcmVudC1kaWFncmFtLWF1dGhvcml0aWVzLWRvbWluaWNhbi50cnljbG91ZGZsYXJlLmNvbSIsDQogICJhbHBuIjogIiIsDQogICJmcCI6ICJjaHJvbWUiDQp9
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VPS地址
+laDe.IO
+
+项目地址
+https://github.com/byJoey/ladefree
+
+
+一键脚本
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/byJoey/ladefree/main/install.ps1" -OutFile "$env:TEMP\install.ps1"; PowerShell -ExecutionPolicy Bypass -File "$env:TEMP\install.ps1"; Remove-Item "$env:TEMP\install.ps1" -ErrorAction SilentlyContinue
+
+
+洛杉矶IP
+
+dm1lc3M6Ly9leUFpZGlJNklDSXlJaXdnSW5Ceklqb2dJbFpzY3kxVlV5MVdkV3gwY2lJc0lDSmhaR1FpT2lBaWQzZDNMblpwYzJFdVkyOXRMblIzSWl3Z0luQnZjblFpT2lBaU5EUXpJaXdnSW1sa0lqb2dJalZsWTJNd056azVMVEUwTmpRdE5EaGlNUzA0TjJNd0xXSmlaR1ZpTmpNNE1qTm1ZeUlzSUNKaGFXUWlPaUFpTUNJc0lDSnpZM2tpT2lBaWJtOXVaU0lzSUNKdVpYUWlPaUFpZDNNaUxDQWlkSGx3WlNJNklDSnViMjVsSWl3Z0ltaHZjM1FpT2lBaWNtOXRZVzR0WjJGeVlXZGxMV1JwZG1sa1pXUXRiV0Z5YVdwMVlXNWhMblJ5ZVdOc2IzVmtabXhoY21VdVkyOXRJaXdnSW5CaGRHZ2lPaUFpTDNadFpYTnpMV0Z5WjI4L1pXUTlNakEwT0NJc0lDSjBiSE1pT2lBaWRHeHpJaXdnSW5OdWFTSTZJQ0p5YjIxaGJpMW5ZWEpoWjJVdFpHbDJhV1JsWkMxdFlYSnBhblZoYm1FdWRISjVZMnh2ZFdSbWJHRnlaUzVqYjIwaUxDQWlZV3h3YmlJNklDSWlMQ0FpWm5BaU9pQWlJbjBLCg==
+
+
+
+
+
+
+
+
+7techlife/seven
+
+服务器端root下，公网IP命令：curl ifconfig.me
+
+https://us-east-1.run.claw.cloud/
+
+当前uuid密码：89270472-ebf6-4463-92f6-d938d90b212c
+
+
+vmpt=5050 bash <(curl -Ls https://raw.githubusercontent.com/yonggekkk/argosb/main/argosb.sh)
+
+反代IP代码
+cloudflare官网，选择 workers和pages
+addEventListener(
+ "fetch", event => {
+    let url = new URL(event.request.url);
+    url.hostname = '域名'; // 这里替换成你要代理的目标域名
+    url.protocol = 'http';
+    let request = new Request(url, event.request);
+    event.respondWith(
+        fetch(request)
+       )
+    }
+)
+
+
+
+
+
+
+
+curl -Ls https://raw.githubusercontent.com/frankiejun/node-ws/refs/heads/test/setup.sh > setup.sh && chmod +x setup.sh && ./setup.sh new.devguide.dpdns.org
+
+
+/home/tbjiaqkl/domains/new.devguide.dpdns.org/public_html/index.js
+
+
+https://new.devguide.dpdns.org/sub
+
+
+a9f19fc6-9328-4cc2-a45f-886d03278c77
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://my.racknerd.com/
+
+Hysteria 2 一键安装脚本搭建过程
+
+连接上VPS后，分别执行以下命令
+
+1.系统组件升级至最新：
+
+apt update -y && apt install -y curl && apt install -y socat
+2.Hysteria 2 一键安装脚本
+
+wget -N --no-check-certificate https://raw.githubusercontent.com/flame1ce/hysteria2-install/main/hysteria2-install-main/hy2/hysteria.sh && bash hysteria.sh
+如果能使用，就不用执行下面的命令
+
+3.查看 hysteria 服务 状态
+
+systemctl status hysteria-server.service
+4.启动 hysteria 服务
+
+systemctl start hysteria-server.service
+5.设置 hysteria 服务 开机自启
+
+systemctl enable hysteria-server.service
+6.其他常用命令
+停止 hysteria 服务
+
+systemctl stop hysteria-server.service
+7.重启 hysteria 服务
+
+systemctl restart hysteria-server.service
+三、常见问题
+
+1、如果节点如果搭建好后，不能正常使用，请先放行端口，将下面的命令复制, 粘贴后敲回车。
+注意: 80和443一定要开放, 另外, 再将 xxx 改为你自己的hysterial监听端口。
+
+iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+iptables -I INPUT -p tcp --dport 443 -j ACCEPT
+iptables -I INPUT -p tcp --dport xxx -j ACCEPT
+或者
+
+直接开放所有端口
+
+ufw disable
+2、搭建的账号之前能用，突然不能用了，怎么解决？
+
+A.如果ip不能ping通，FinalShell不能直接连接vps服务器，说明ip被墙了，需要换ip。进入后台, 点击 chang Ip, 填写表单即可. 建议在美国工作日时间提交, 很快就可以更换IP. 注意, 购买后,前3天免费更换, 过期后$3美元/次.
+B.如果ip正常，大概率是端口号被封了，换端口号，重新搭建。
+
+3、需要安装bbr加速吗？
+
+不需要。bbr加速是tcp加速，而hysteria是Quic(udp)协议。所以不用再部署bbr加速。
+
+
+
+
